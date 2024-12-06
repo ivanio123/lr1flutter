@@ -15,7 +15,30 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.grey[100],
       ),
-      home: CombinedListPage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomePage(),
+        '/posts-comments': (context) => CombinedListPage(),
+      },
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home Page'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/posts-comments');
+          },
+          child: Text('View Posts & Comments'),
+        ),
+      ),
     );
   }
 }
@@ -41,7 +64,7 @@ class _CombinedListPageState extends State<CombinedListPage> {
 
       if (postResponse.statusCode == 200 && commentResponse.statusCode == 200) {
         final List<Post> posts = (json.decode(postResponse.body) as List)
-            .take(10) // Беремо лише 10 записів для спрощення
+            .take(10)
             .map((json) => Post.fromJson(json))
             .toList();
 
@@ -113,6 +136,13 @@ class _CombinedListPageState extends State<CombinedListPage> {
             return Center(child: Text('No data available'));
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Icon(Icons.home),
+        tooltip: 'Back to Home',
       ),
     );
   }
